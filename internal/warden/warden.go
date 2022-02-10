@@ -18,23 +18,26 @@ import (
 var counterMap = make(map[string]int)
 
 func Run() error {
+	run()
 	every.Minutes().Do(func(c *every.Context) {
-		entries, e := os.ReadDir(`configs`)
-		if e != nil {
-			log.W(e)
-			return
-		}
-		for _, dir := range entries {
-			if !dir.IsDir() && strings.HasSuffix(dir.Name(), `.json`) {
-				go processConfig(dir.Name())
-
-			}
-		}
-
+		run()
 	})
 	service.Wait()
 
 	return nil
+}
+
+func run() {
+	entries, e := os.ReadDir(`configs`)
+	if e != nil {
+		log.W(e)
+		return
+	}
+	for _, dir := range entries {
+		if !dir.IsDir() && strings.HasSuffix(dir.Name(), `.json`) {
+			go processConfig(dir.Name())
+		}
+	}
 }
 
 func processConfig(filename string) {
@@ -61,8 +64,8 @@ func processConfig(filename string) {
 	}
 	prevCount := counterMap[name]
 
-	if prevCount != 0 && prevCount != count {
-		counterMap[name] = count
+	counterMap[name] = count
+	if prevCount != count {
 		body := js.GetJSONObject(`notify.body`)
 		strBody := strings.ReplaceAll(body.ToString(), `[count]`, strconv.Itoa(count))
 
@@ -73,9 +76,9 @@ func processConfig(filename string) {
 		}
 		bodyResp, e := io.ReadAll(resp.Body)
 		if e != nil {
+			log.D(string(bodyResp))
 			log.W(fmt.Sprintf(`%v, file: %s`, e, filename))
 			return
 		}
-		log.D(string(bodyResp))
 	}
 }
