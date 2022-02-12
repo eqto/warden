@@ -52,7 +52,7 @@ func processConfig(filename string) {
 		return
 	}
 
-	out, e := exec.Command(`bash`, `-c`, fmt.Sprintf(`ps ax | grep "[%s]%s" | wc -l`, name[:1], name[1:])).Output()
+	out, e := exec.Command(`bash`, `-c`, fmt.Sprintf(`ps ax | grep -E "\W*%s(\s+|$)" | wc -l`, name)).Output()
 	if e != nil {
 		log.W(fmt.Sprintf(`%v, file: %s`, e, filename))
 		return
@@ -68,6 +68,7 @@ func processConfig(filename string) {
 	if prevCount != count {
 		body := js.GetJSONObject(`notify.body`)
 		strBody := strings.ReplaceAll(body.ToString(), `[count]`, strconv.Itoa(count))
+		strBody = strings.ReplaceAll(strBody, `[name]`, name)
 
 		resp, e := http.Post(js.GetString(`notify.url`), js.GetString(`notify.content_type`), strings.NewReader(strBody))
 		if e != nil {
