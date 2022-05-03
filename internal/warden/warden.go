@@ -28,6 +28,7 @@ func Run() error {
 }
 
 func run() {
+	defer service.HandlePanic()
 	entries, e := os.ReadDir(`configs`)
 	if e != nil {
 		log.W(e)
@@ -41,6 +42,7 @@ func run() {
 }
 
 func processConfig(filename string) {
+	defer service.HandlePanic()
 	js, e := json.ParseFile(`configs/` + filename)
 	if e != nil {
 		log.W(fmt.Sprintf(`%v, file: %s`, e, filename))

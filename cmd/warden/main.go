@@ -8,7 +8,7 @@ import (
 
 func main() {
 	defer service.HandlePanic()
-	service.OnPanic(log.Fatal)
+	service.OnPanic(log.E)
 	log.SetFile(`warden.log`)
 
 	if e := service.Run(warden.Run); e != nil {
