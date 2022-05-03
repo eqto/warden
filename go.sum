@@ -4,5 +4,5 @@ github.com/eqto/go-json v0.4.1 h1:Vge4sAVJkeJE1bN5xBv6bCosp5wLYvbzUP+MPBKgLk0=
 github.com/eqto/go-json v0.4.1/go.mod h1:n/ijyc7iZZV9bQr7+MuUQACos1TVUFBOc26VR7j5+js=
 github.com/eqto/go-logger v0.4.0 h1:4Wdbxq5fJ8EG/wd5OSluGTJpLPEiz9NQsS/XKThDorw=
 github.com/eqto/go-logger v0.4.0/go.mod h1:WDKM8DIJPSDydDtPzkULtKggXesrrBDAFG+PTgqcTS0=
-github.com/eqto/service v0.1.5 h1:l+tg6yjQwe6vOdvzCrSDOq7LVYOPSCRxiJj6Z/KZhd0=
-github.com/eqto/service v0.1.5/go.mod h1:/A1tZyzAvRystz2Cf6oQneIvgZOjIg21s5XnU+IxY+8=
+github.com/eqto/service v0.1.6 h1:xm0zhIzgt9Mjmr6uTHBFc4umEm9lIFw0M1MlPmAZqRE=
+github.com/eqto/service v0.1.6/go.mod h1:/A1tZyzAvRystz2Cf6oQneIvgZOjIg21s5XnU+IxY+8=
