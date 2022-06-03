@@ -90,6 +90,12 @@ func processConfig(filename string) {
 		strBody := strings.ReplaceAll(body.ToString(), `[count]`, strconv.Itoa(count))
 		strBody = strings.ReplaceAll(strBody, `[name]`, name)
 
+		if count > 0 {
+			strBody = strings.ReplaceAll(strBody, `[status]`, `running`)
+		} else {
+			strBody = strings.ReplaceAll(strBody, `[status]`, `stopped`)
+		}
+
 		resp, e := http.Post(js.GetString(`notify.url`), js.GetString(`notify.content_type`), strings.NewReader(strBody))
 		if e != nil {
 			log.W(fmt.Sprintf(`%v, file: %s`, e, filename))
