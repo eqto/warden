@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/eqto/every"
 	"github.com/eqto/go-json"
@@ -15,10 +16,14 @@ import (
 	"github.com/eqto/service"
 )
 
-var counterMap = make(map[string]int)
+var (
+	counterMap  = make(map[string]int)
+	counterLock = sync.RWMutex{}
+)
 
 func Run() error {
-	run()
+	defer service.HandlePanic()
+	go run()
 	every.Minutes().Do(func(c *every.Context) {
 		run()
 	})
@@ -39,6 +44,18 @@ func run() {
 			go processConfig(dir.Name())
 		}
 	}
+}
+
+func readCounter(name string) int {
+	counterLock.RLock()
+	defer counterLock.RUnlock()
+	return counterMap[name]
+}
+
+func writeCounter(name string, value int) {
+	counterLock.Lock()
+	defer counterLock.Unlock()
+	counterMap[name] = value
 }
 
 func processConfig(filename string) {
@@ -64,9 +81,10 @@ func processConfig(filename string) {
 		log.W(fmt.Sprintf(`%v, file: %s`, e, filename))
 		return
 	}
-	prevCount := counterMap[name]
+	prevCount := readCounter(name)
 
-	counterMap[name] = count
+	writeCounter(name, count)
+
 	if prevCount != count {
 		body := js.GetJSONObject(`notify.body`)
 		strBody := strings.ReplaceAll(body.ToString(), `[count]`, strconv.Itoa(count))

@@ -12,7 +12,7 @@ func main() {
 	log.SetFile(`warden.log`)
 
 	if e := service.Run(warden.Run); e != nil {
-		log.E(e)
+		panic(e)
 	}
 
 }
